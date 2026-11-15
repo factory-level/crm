@@ -81,6 +81,8 @@ request.
   stranger may read; `/` joins it only when `IS_MARKETING` is set.
 - **There is no way past the key gate but to answer** — Skip stranded installs, every
   later company sitting `PENDING` with nothing saying so.
+- **`CRM_LOCAL_DEV="1"` passes the key gate in development only**, and adds a local
+  sign-in. It is ignored when `NODE_ENV` is `production`. See `docs/environment.md`.
 
 ### The name is also the URL
 

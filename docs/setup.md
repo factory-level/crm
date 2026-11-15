@@ -10,8 +10,13 @@ reads once.
 cp .env.example .env        # fill DATABASE_URL, BETTER_AUTH_SECRET, ALLOWED_SIGN_IN
 docker compose up -d        # Postgres, matching .env.example
 bun run db:migrate && bun run db:seed
-bun run dev                 # app :3000, api :3001, agent :2000
+bun run dev                 # app :3000, api :3001, agent :2000, work :3002
 ```
+
+The web app starts on the host and port of the first `APP_URL` entry, and the API on
+`PORT`. Change both to run a second checkout beside this one. Use a different host
+name for the second checkout, `127.0.0.1` beside `localhost`: both name their session
+cookie `crm.session_token`, and a cookie ignores the port.
 
 Prisma from the repo root: `db:generate`, `db:migrate`, `db:push`, `db:reset`,
 `db:seed`, `db:studio`, `db:deploy`.

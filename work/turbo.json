@@ -1,0 +1,12 @@
+{
+	"$schema": "https://turborepo.dev/schema.json",
+	"extends": ["//"],
+	"tasks": {
+		"dev": {
+			"dependsOn": ["$TURBO_EXTENDS$"],
+			"cache": false,
+			"persistent": true,
+			"passThroughEnv": ["API_URL", "WORK_CRM_API_KEY"]
+		}
+	}
+}

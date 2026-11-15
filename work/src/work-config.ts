@@ -1,0 +1,26 @@
+export const WORK = {
+	server: { host: "127.0.0.1", port: 3002 },
+	inferops: {
+		path: "/inferops",
+		loginPath: "/inferops/auth/login",
+		logoutPath: "/inferops/auth/logout",
+		mePath: "/inferops/auth/me",
+		jobsPath: "/inferops/jobs",
+		summaryPath: "/inferops/operations/summary",
+		crmPath: "/inferops/crm",
+	},
+	routes: {
+		login: "/login",
+		dashboard: "/",
+		customers: "/customers",
+		customerCreate: "/customers/new",
+		customer: "/customers/:id",
+		customerEdit: "/customers/:id/edit",
+	},
+	list: { pageSize: 10, maxPageSize: 100 },
+	history: { limit: 50 },
+	live: { refetchMs: 5_000 },
+	note: { type: "NOTE" },
+	status: { unauthorized: 401 },
+	login: { email: "demo@inferops.test", password: "demo" },
+} as const;
