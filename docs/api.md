@@ -81,6 +81,8 @@ request.
   stranger may read; `/` joins it only when `IS_MARKETING` is set.
 - **There is no way past the key gate but to answer** — Skip stranded installs, every
   later company sitting `PENDING` with nothing saying so.
+- **`CRM_LOCAL_DEV="1"` passes the key gate in development only**, and adds a local
+  sign-in. It is ignored when `NODE_ENV` is `production`. See `docs/environment.md`.
 
 ### The name is also the URL
 
@@ -152,6 +154,12 @@ time and no file is checked in — the document is whatever the routers are.
 routes synchronously and Nest's own routing would otherwise shadow them. The factory
 form defers building the document to the first request, which is what lets it read
 the tRPC router that only exists after init.
+
+**The bridge sends no CORS header, by decision.** It is mounted before `app.init()`
+and never calls `next()`, so the CORS setup that covers `/api/auth/*` does not reach
+it. Its credential is a session cookie or a service key, and a key in browser code is
+not secret. A browser reaches the bridge through a server on its own origin, as the
+work app does (`docs/work.md`).
 
 Two rules follow for the serverless build:
 

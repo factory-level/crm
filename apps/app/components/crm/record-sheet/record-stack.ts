@@ -178,7 +178,7 @@ function RecordStackFallbackProvider({ children }: { children: ReactNode }) {
 	);
 }
 
-export function RecordStackProvider({ children }: { children: ReactNode }) {
+function RecordStackProvider({ children }: { children: ReactNode }) {
 	const state = useRecordStackState();
 	return createElement(RecordStackContext.Provider, { value: state }, children);
 }

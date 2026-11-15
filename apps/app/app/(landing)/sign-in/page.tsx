@@ -1,8 +1,10 @@
 import type { MailboxProviderId } from "@crm/auth/scopes";
+import { AuthButton } from "@crm/ui/components/auth-button";
 import type { Metadata } from "next";
 import { redirect, unstable_rethrow } from "next/navigation";
 import { Suspense } from "react";
 import { AuthHeading, AuthShell } from "@/components/auth-shell";
+import { isLocalDev, LOCAL_DEV } from "@/lib/local-dev";
 import { getSession } from "@/lib/session";
 import { getServerQueryClient, getServerTrpc } from "@/lib/trpc/server";
 import { SocialSignIn } from "./social-sign-in";
@@ -41,6 +43,8 @@ async function currentSession() {
 }
 
 export default function SignInPage({ searchParams }: PageProps<"/sign-in">) {
+	if (isLocalDev()) return <LocalSignIn />;
+
 	return (
 		<AuthShell>
 			<Suspense
@@ -115,5 +119,19 @@ async function SignIn({
 				<SocialSignIn key={provider} provider={provider} />
 			))}
 		</>
+	);
+}
+
+function LocalSignIn() {
+	return (
+		<AuthShell>
+			<AuthHeading
+				title="Local CRM"
+				description="Sign in to your local development workspace."
+			/>
+			<form action={LOCAL_DEV.loginPath} method="post">
+				<AuthButton type="submit">Sign in locally</AuthButton>
+			</form>
+		</AuthShell>
 	);
 }

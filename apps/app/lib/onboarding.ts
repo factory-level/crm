@@ -1,6 +1,7 @@
 import type { NextRequest } from "next/server";
 import { z } from "zod";
 import { API_URL } from "@/lib/env";
+import { isLocalDev } from "@/lib/local-dev";
 
 export const ONBOARDING_PATH = "/onboarding";
 
@@ -69,6 +70,8 @@ export async function readWorkspaceGate(
 }
 
 export async function readResearchGate(request: NextRequest): Promise<Gate> {
+	if (isLocalDev()) return "settled";
+
 	const { configured } = researchKeyAnswer.parse(
 		await read(request, "settings.researchKey"),
 	);

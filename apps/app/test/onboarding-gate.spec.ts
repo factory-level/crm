@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from "bun:test";
+import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { AUTH_COOKIE_PREFIX } from "@crm/auth/cookies";
 import { NextRequest } from "next/server";
 import { readResearchGate, readWorkspaceGate } from "../lib/onboarding";
@@ -12,10 +12,25 @@ const realFetch = globalThis.fetch;
 
 const realMarketing = process.env.IS_MARKETING;
 
+const realLocalDev = process.env.CRM_LOCAL_DEV;
+
+const realNodeEnv = process.env.NODE_ENV;
+
+beforeEach(() => {
+	localDev(undefined, realNodeEnv);
+});
+
 afterEach(() => {
 	globalThis.fetch = realFetch;
 	marketing(realMarketing);
+	localDev(realLocalDev, realNodeEnv);
 });
+
+function localDev(value: string | undefined, nodeEnv: string | undefined) {
+	if (value === undefined) delete process.env.CRM_LOCAL_DEV;
+	else process.env.CRM_LOCAL_DEV = value;
+	Object.assign(process.env, { NODE_ENV: nodeEnv });
+}
 
 function marketing(value: string | undefined) {
 	if (value === undefined) delete process.env.IS_MARKETING;
@@ -151,6 +166,36 @@ describe("readResearchGate", () => {
 
 		expect(await readResearchGate(request("/", [SESSION_COOKIE]))).toBe(
 			"unknown",
+		);
+	});
+});
+
+describe("CRM_LOCAL_DEV", () => {
+	it("settles the gate in development without asking the API", async () => {
+		const calls: string[] = [];
+		stub(async (url) => {
+			calls.push(url);
+			return json(researchKey(false));
+		});
+		localDev("1", "development");
+
+		expect(await readResearchGate(request("/", [SESSION_COOKIE]))).toBe(
+			"settled",
+		);
+		expect(calls).toEqual([]);
+	});
+
+	it("is ignored in production, and for any value but the literal 1", async () => {
+		answerWith(researchKey(false));
+
+		localDev("1", "production");
+		expect(await readResearchGate(request("/", [SESSION_COOKIE]))).toBe(
+			"required",
+		);
+
+		localDev("true", "development");
+		expect(await readResearchGate(request("/", [SESSION_COOKIE]))).toBe(
+			"required",
 		);
 	});
 });

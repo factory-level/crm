@@ -30,6 +30,7 @@ export default defineConfig({
 			"apps/api/src/generated/**",
 			"packages/db/src/generated/**",
 			"packages/ui/src/components/**",
+			"work/src/components/refine-ui/**",
 			"tools/oxlint/anti-slop/**",
 		],
 		rules: {

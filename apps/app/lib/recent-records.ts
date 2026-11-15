@@ -9,7 +9,7 @@ const STORAGE_PREFIX = "crm:recent-records:";
 
 export const entityLogoTone = z.enum(["opaque", "dark", "light"]);
 
-export const recentRecord = z.object({
+const recentRecord = z.object({
 	kind: z.enum(["company", "contact", "deal"]),
 	id: z.string().min(1),
 	label: z.string(),

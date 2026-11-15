@@ -4,14 +4,33 @@ Operational detail moved out of the rule docs. `api.md`, `agent.md` and
 `environment.md` are what agents read before changing code; this is what a person
 reads once.
 
+## bun 1.4.0 beside another bun
+
+`bun.lock` is lockfile version 3. An older bun stops at `bun install` with
+`Unknown lockfile version`. Install bun 1.4.0 beside the bun you have:
+
+```sh
+npm install --prefix "$HOME/.local/share/bun-1.4.0" bun@1.4.0
+export PATH="$HOME/.local/share/bun-1.4.0/node_modules/.bin:$PATH"
+bun --version   # 1.4.0
+```
+
+Run the `export` line in each shell that runs a command of this repo. Run it before
+`git push` too, because the pre-push hook runs `bun`.
+
 ## First run
 
 ```sh
 cp .env.example .env        # fill DATABASE_URL, BETTER_AUTH_SECRET, ALLOWED_SIGN_IN
 docker compose up -d        # Postgres, matching .env.example
 bun run db:migrate && bun run db:seed
-bun run dev                 # app :3000, api :3001, agent :2000
+bun run dev                 # app :3000, api :3001, agent :2000, work :3002
 ```
+
+The web app starts on the host and port of the first `APP_URL` entry, and the API on
+`PORT`. Change both to run a second checkout beside this one. Use a different host
+name for the second checkout, `127.0.0.1` beside `localhost`: both name their session
+cookie `crm.session_token`, and a cookie ignores the port.
 
 Prisma from the repo root: `db:generate`, `db:migrate`, `db:push`, `db:reset`,
 `db:seed`, `db:studio`, `db:deploy`.

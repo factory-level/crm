@@ -11,6 +11,7 @@
 			"**",
 			"!**/src/generated",
 			"!packages/ui/src/components",
+			"!work/src/components/refine-ui",
 			"!packages/ui/src/hooks/use-mobile.ts",
 			"!**/.next",
 			"!**/dist",

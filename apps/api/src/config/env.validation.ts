@@ -51,6 +51,10 @@ export class EnvironmentVariables {
 
 	@IsOptional()
 	@IsString()
+	CRM_LOCAL_DEV?: string;
+
+	@IsOptional()
+	@IsString()
 	GOOGLE_CLIENT_ID?: string;
 
 	@IsOptional()

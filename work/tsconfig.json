@@ -1,0 +1,12 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"extends": "@crm/typescript-config/react-library.json",
+	"compilerOptions": {
+		"types": ["bun", "node"],
+		"paths": {
+			"@/*": ["./src/*"]
+		}
+	},
+	"include": ["src", "test", "mock", "scripts", "vite.config.ts"],
+	"exclude": ["node_modules", "dist"]
+}

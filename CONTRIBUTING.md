@@ -265,3 +265,55 @@ plausible value is a bug here even when it's convenient.
 Include what you expected, what happened, and enough to reproduce it. If it involves the agent, the
 session transcript is worth more than a description of it — but read it first and redact anything
 that belongs to a real customer.
+
+## This fork
+
+`factory-level/crm` is a fork of `trycompai/crm`. This section applies to the fork only. Where it
+disagrees with "Shipping a change" above, this section wins on the fork.
+
+**No workflow runs on the fork.** `gh workflow list -R factory-level/crm --all` returns nothing, and
+`main` has no branch protection. So a push opens no pull request, nothing writes the title, and no
+check runs on GitHub.
+
+- Open the pull request yourself: `gh pr create -R factory-level/crm --base main`. Pass `-R`, or
+  `gh` targets the upstream repository.
+- Write the title yourself, as a Conventional Commit.
+- Run the checks on your machine before the merge: `bun run audit`, `check-types`, `lint`,
+  `lint:slop`, `lint:dead` and `test`. The pre-push hook runs all of them but `lint:dead`.
+- Merge with `gh pr merge <number> -R factory-level/crm --squash`.
+
+**Take upstream changes by merge, never by rebase.**
+
+```sh
+git remote add upstream https://github.com/trycompai/crm   # once
+git fetch upstream
+git switch -c sync/upstream origin/main
+git merge upstream/main
+```
+
+Then open a pull request into `main`.
+
+**Fork-only code goes in fork-only paths**: `work/`, `docs/work.md`, `docs/designs/`,
+`apps/app/app/api/dev/`, `apps/app/lib/local-dev.ts` and `apps/app/scripts/`. A change to any other
+file needs a reason in the pull request, and a row in the table below.
+
+**A custom integration for one company goes where upstream puts integrations**:
+`packages/mcp-integrations` and `apps/agent`. The API holds no vendor client (`docs/api.md`).
+
+### Upstream files the fork changes
+
+Each row is a file that upstream also owns. On a merge conflict, keep the upstream change and
+apply the fork change again.
+
+| File | Fork change |
+| --- | --- |
+| `package.json`, `bun.lock` | `work` is a workspace. Patch updates clear `bun audit` |
+| `knip.json` | A `work` workspace entry. `ignoreIssues` is at the top level, where knip 6 reads it |
+| `biome.jsonc`, `vite.config.ts` | Lint skips `work/src/components/refine-ui`, which is vendored |
+| `docker-compose.yml` | The Postgres host port is `CRM_POSTGRES_PORT`, published on `127.0.0.1` |
+| `.env.example`, `docs/environment.md`, `docs/setup.md`, `docs/api.md`, `AGENTS.md` | The new variables, the local development mode and the `work/` doc row |
+| `apps/app/package.json` | `dev` runs `scripts/dev.ts`, which takes the host and port from `APP_URL` |
+| `apps/app/lib/onboarding.ts`, `apps/app/app/(landing)/sign-in/page.tsx`, `apps/app/turbo.json`, `apps/app/test/onboarding-gate.spec.ts` | `CRM_LOCAL_DEV`: the key gate and the local sign-in button |
+| `apps/api/src/main.ts`, `apps/api/src/config/env.validation.ts`, `apps/api/turbo.json` | `CRM_LOCAL_DEV`: the API listens on `127.0.0.1` |
+| `packages/ui/src/components/sidebar.tsx`, `breadcrumb.tsx` | New shadcn primitives, added with `bun run ui:add` |
+| `apps/api/src/activities/task-due-date.ts`, `apps/app/lib/recent-records.ts`, `apps/app/lib/connection-result.ts`, `apps/app/components/dashboard-charts.tsx`, `apps/app/components/crm/record-sheet/record-stack.ts`, `apps/app/app/(app)/[slug]/companies/import/csv-import.ts` | One unused `export` removed in each, so `bun run lint:dead` passes |

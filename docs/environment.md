@@ -94,6 +94,25 @@ list fails closed.** Parsed on demand. `packages/auth/src/workspace.ts`.
 - **`isMarketing()` (`apps/app/lib/env.ts`) reads per request**, so a config change
   needs no rebuild. Declared in `apps/app/turbo.json` `passThroughEnv`.
 
+## `CRM_LOCAL_DEV` — local development mode
+
+`"1"` turns on a mode for a local install that has no identity provider and no
+Context key. `isLocalDev()` (`apps/app/lib/local-dev.ts`) is the web app's only reader;
+the API reads it once in `main.ts`.
+
+- **Only the literal `1`, and never in production.** `NODE_ENV=production` turns it
+  off whatever the variable says. A deployed install keeps every gate.
+- **`/sign-in` shows one button.** It posts to `POST /api/dev/login`, which signs you
+  in as `dev@localhost`. The route answers 404 when the mode is off, and 403 unless
+  the request comes from its own origin on `localhost` or `127.0.0.1`.
+- **The key gate reads `settled`.** `readResearchGate` does not ask the API. It moves
+  the gate, not the capability: with no key, a `brand` task still settles `SKIPPED`
+  and each new company stays `PENDING`.
+- **The API listens on `127.0.0.1`.** Without the mode it listens on every interface,
+  which a container needs.
+- Declared in `passThroughEnv` in `apps/app/turbo.json` and `apps/api/turbo.json`, and
+  in `env.validation.ts`.
+
 ## Typed, validated env
 
 `apps/api/src/config/env.validation.ts` runs via `ConfigModule.forRoot({ validate })`,
