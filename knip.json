@@ -1,14 +1,12 @@
 {
 	"$schema": "https://unpkg.com/knip@6/schema.json",
+	"ignoreIssues": {
+		"tools/oxlint/anti-slop/shared/dictionary-types.ts": ["exports", "types"],
+		"packages/ui/src/lib/row-accent.ts": ["duplicates"]
+	},
 	"workspaces": {
 		".": {
-			"project": ["tools/**/*.ts"],
-			"ignoreIssues": {
-				"tools/oxlint/anti-slop/shared/dictionary-types.ts": [
-					"exports",
-					"types"
-				]
-			}
+			"project": ["tools/**/*.ts"]
 		},
 		"apps/api": {
 			"entry": ["api/index.ts", "scripts/*.ts", "test/**/*.spec.ts"],

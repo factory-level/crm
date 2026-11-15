@@ -12,7 +12,7 @@ export type ParsedCsv = {
 export type CompanyImportField = Exclude<keyof CompanyImportRow, undefined>;
 export type CompanyImportMapping = Array<CompanyImportField | null>;
 
-export type CompanyImportResult = {
+type CompanyImportResult = {
 	created: number;
 	skipped: number;
 	skips: Array<{ row: number; reason: string }>;

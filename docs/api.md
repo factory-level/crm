@@ -155,6 +155,12 @@ routes synchronously and Nest's own routing would otherwise shadow them. The fac
 form defers building the document to the first request, which is what lets it read
 the tRPC router that only exists after init.
 
+**The bridge sends no CORS header, by decision.** It is mounted before `app.init()`
+and never calls `next()`, so the CORS setup that covers `/api/auth/*` does not reach
+it. Its credential is a session cookie or a service key, and a key in browser code is
+not secret. A browser reaches the bridge through a server on its own origin, as the
+work app does (`docs/work.md`).
+
 Two rules follow for the serverless build:
 
 - `@nestjs/swagger` stays in `EXTERNALS` in `apps/api/scripts/build-func.mjs`, because

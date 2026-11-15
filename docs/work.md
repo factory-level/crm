@@ -93,6 +93,11 @@ of a customer from that id, so the same customer always has the same jobs.
   (`https://ui.refine.dev/r/<name>.json`). Its imports point at `@crm/ui`. Lint
   skips it, as it skips `packages/ui/src/components`.
 - `work/src/work-config.ts` and `work/mock/mock-config.ts` hold every constant.
+- `work/package.json` aliases `vite` to `@voidzero-dev/vite-plus-core`, the package
+  that `vite-plus` takes its types from. The Vite plugins then share one `Plugin`
+  type with `defineConfig`. The alias pins the `vite-plus` version: change both
+  together.
+- `docs/designs/work-refine-app.md` is the review record and the decision list.
 
 ## Rules
 

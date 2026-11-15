@@ -44,7 +44,7 @@ export function taskDayBoundaries(reference: Date): TaskDayBoundaries {
 	return { startOfToday, startOfTomorrow, startOfNextWeek };
 }
 
-export function taskDueDay(value: string): Date {
+function taskDueDay(value: string): Date {
 	const parsed = taskDueDayInput.safeParse(value);
 	if (!parsed.success) {
 		throw new BadRequestException(`"${value}" is not a calendar day.`);

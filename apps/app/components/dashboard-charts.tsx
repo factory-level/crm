@@ -26,10 +26,7 @@ const donutLoading = () => (
 	</div>
 );
 
-export type {
-	DonutSlice,
-	SeriesConfig,
-} from "@crm/ui/components/dashboard-chart";
+export type { SeriesConfig } from "@crm/ui/components/dashboard-chart";
 
 export const AreaTrend = dynamic(() => load().then((m) => m.AreaTrend), {
 	ssr: false,

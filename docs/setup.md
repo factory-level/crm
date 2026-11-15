@@ -4,6 +4,20 @@ Operational detail moved out of the rule docs. `api.md`, `agent.md` and
 `environment.md` are what agents read before changing code; this is what a person
 reads once.
 
+## bun 1.4.0 beside another bun
+
+`bun.lock` is lockfile version 3. An older bun stops at `bun install` with
+`Unknown lockfile version`. Install bun 1.4.0 beside the bun you have:
+
+```sh
+npm install --prefix "$HOME/.local/share/bun-1.4.0" bun@1.4.0
+export PATH="$HOME/.local/share/bun-1.4.0/node_modules/.bin:$PATH"
+bun --version   # 1.4.0
+```
+
+Run the `export` line in each shell that runs a command of this repo. Run it before
+`git push` too, because the pre-push hook runs `bun`.
+
 ## First run
 
 ```sh
