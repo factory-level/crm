@@ -21,8 +21,13 @@ fallback("GOOGLE_CLIENT_SECRET", "test-google-client-secret");
 
 describe("Auth (e2e)", () => {
 	let app: INestApplication;
+	let isGoogleConfigured: () => boolean;
+	let isMicrosoftConfigured: () => boolean;
 
 	beforeAll(async () => {
+		({ isGoogleConfigured, isMicrosoftConfigured } = await import(
+			"@crm/auth/env"
+		));
 		const { AppModule } = await import("../src/app.module");
 
 		const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -60,13 +65,12 @@ describe("Auth (e2e)", () => {
 			.get("/api/trpc/sso.signInOptions")
 			.expect(200);
 
-		const microsoftConfigured = Boolean(
-			process.env.MICROSOFT_CLIENT_ID && process.env.MICROSOFT_CLIENT_SECRET,
-		);
-
+		// The page offers what this process configured. That comes from @crm/auth/env, which reads
+		// the environment once, when a spec first imports it: in a full run another spec may have
+		// done so before this file's fallbacks were set, so compare with what it read, not with them.
 		expect(response.body.result.data).toEqual({
-			google: true,
-			microsoft: microsoftConfigured,
+			google: isGoogleConfigured(),
+			microsoft: isMicrosoftConfigured(),
 			providers: [],
 		});
 	});
