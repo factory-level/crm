@@ -1,5 +1,6 @@
 import { db } from "@crm/db";
 import type { JsonValue } from "@crm/db/json";
+import type { GenericEndpointContext } from "better-auth";
 import {
 	APIError,
 	createAuthMiddleware,
@@ -24,7 +25,10 @@ const OAUTH_CALLBACK_PATH = "/oauth2/callback";
 const connectStartBody = z.object({ providerId: z.string() });
 const callbackParams = z.object({ providerId: z.string() });
 
-export const slackConnectGuard = createAuthMiddleware(async (ctx) => {
+/** The Slack-connect check on its own, so it can run beside other before-hook checks. */
+export async function checkSlackConnect(
+	ctx: GenericEndpointContext,
+): Promise<void> {
 	const guarded =
 		startsSlackConnect(ctx.path, ctx.body) ||
 		completesSlackConnect(ctx.path, ctx.params);
@@ -60,6 +64,10 @@ export const slackConnectGuard = createAuthMiddleware(async (ctx) => {
 				"Only an owner or an admin can connect Slack. One Slack workspace is shared by everyone here, so ask one of them to connect or reconnect it.",
 		});
 	}
+}
+
+export const slackConnectGuard = createAuthMiddleware(async (ctx) => {
+	await checkSlackConnect(ctx as GenericEndpointContext);
 });
 
 function startsSlackConnect(
