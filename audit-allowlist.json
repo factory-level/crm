@@ -1,0 +1,510 @@
+{
+	"$comment": "Advisories bun audit may report without failing (tools/audit/audit.ts). Each was reviewed on 2026-11-16 against release c9473b82: every one is reached at runtime from the workspaces named (none is dev-only), so each is tracked for upgrade, not accepted. A new advisory, or one not listed here, still fails the audit. Remove an entry once its package is upgraded past the range.",
+	"reviewed": "2026-11-16",
+	"base": "c9473b82e3b4bfd5d0598bbdf7c1f36f3d2d68f0",
+	"advisories": [
+		{
+			"id": "GHSA-2464-fhr4-w9xw",
+			"severity": "critical",
+			"packages": [
+				"next"
+			],
+			"title": "Next.js: Unauthenticated Remote Code Execution in Image Optimization API when SVG files are used (>=16.0.0 <=16.4.0)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"@crm/typescript-config",
+				"@crm/ui",
+				"api",
+				"app"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-673q-mjm6-r5xr",
+			"severity": "critical",
+			"packages": [
+				"next"
+			],
+			"title": "Next.js: Unauthenticated Remote Code Execution in `use cache` functions returning typed arrays (>=16.0.0 <=16.4.0)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"@crm/typescript-config",
+				"@crm/ui",
+				"api",
+				"app"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-965c-763c-88jm",
+			"severity": "critical",
+			"packages": [
+				"better-auth"
+			],
+			"title": "better-auth: OAuth state can be used as a Magic Link to sign in as another user (>=1.4.0-beta.18 <1.7.7)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"@crm/auth",
+				"api",
+				"app"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-cg2g-xh64-v4q7",
+			"severity": "critical",
+			"packages": [
+				"dompurify"
+			],
+			"title": "DOMPurify SAFE_FOR_TEMPLATES bypass: split template expressions survive in attached shadow root content on DOM output modes (>=3.4.4 <=3.4.16)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"app"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-27r3-jxmh-p828",
+			"severity": "high",
+			"packages": [
+				"body-parser"
+			],
+			"title": "body-parser vulnerable to Denial of Service via trailing bytes after a compressed request body (>=2.0.0 <2.4.0)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"agent",
+				"api"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-2m5v-pch6-74hx",
+			"severity": "high",
+			"packages": [
+				"undici"
+			],
+			"title": "undici vulnerable to TLS certificate validation bypass via dropped tls options in Agent (>=8.0.0 <8.12.2)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"@crm/db",
+				"agent"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-4w7w-5xrc-9h26",
+			"severity": "high",
+			"packages": [
+				"undici"
+			],
+			"title": "undici vulnerable to cache poisoning and cross-user disclosure via cross-origin redirects (>=8.0.0 <8.12.2)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"@crm/db",
+				"agent"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-mrhx-c7xc-m3w5",
+			"severity": "high",
+			"packages": [
+				"zod"
+			],
+			"title": "Zod can exhaust memory while validating oversized constrained collections (<4.6.6)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"@crm/auth",
+				"@crm/db",
+				"@crm/mcp-integrations",
+				"@crm/validation",
+				"agent",
+				"api",
+				"app"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-mrv2-3pqr-j5jr",
+			"severity": "high",
+			"packages": [
+				"dompurify"
+			],
+			"title": "DOMPurify IN_PLACE: hook that removes a parent or sibling leaves the detached subtree's event handlers armed (incomplete fix for GHSA-p98j-92pf-mc4p) (<=3.4.16)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"app"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-p3m5-59mp-jv5r",
+			"severity": "high",
+			"packages": [
+				"next"
+			],
+			"title": "Next.js: Denial of Service in App Router using Server Actions (>=16.0.0 <=16.4.0)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"@crm/typescript-config",
+				"@crm/ui",
+				"api",
+				"app"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-q7qp-rjg7-q26m",
+			"severity": "high",
+			"packages": [
+				"multer"
+			],
+			"title": "multer vulnerable to Denial of Service via a pending asynchronous fileFilter after request teardown (>=2.0.0 <2.5.0)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"api"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-q84f-53jg-9ppm",
+			"severity": "high",
+			"packages": [
+				"better-auth"
+			],
+			"title": "better-auth: Device login approval does not show the requesting client or permissions (>=1.3.8-beta.3 <1.7.0-rc.3)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"@crm/auth",
+				"api",
+				"app"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-qrxm-fqhp-jwvm",
+			"severity": "high",
+			"packages": [
+				"undici"
+			],
+			"title": "undici vulnerable to Denial of Service via TLS 1.2 certificate-changing renegotiation (>=8.0.0 <8.12.2)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"@crm/db",
+				"agent"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-r4xp-prcw-77qf",
+			"severity": "high",
+			"packages": [
+				"better-auth"
+			],
+			"title": "better-auth: OAuth Proxy lets an attacker sign in as another user (>=1.5.0-beta.12 <1.7.7)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"@crm/auth",
+				"api",
+				"app"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-xjj6-f33q-929c",
+			"severity": "high",
+			"packages": [
+				"undici"
+			],
+			"title": "undici vulnerable to Denial of Service via unhandled error on excessive content-encodings (>=8.0.0 <8.12.2)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"@crm/db",
+				"agent"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-46wx-v44x-9hh2",
+			"severity": "moderate",
+			"packages": [
+				"hono"
+			],
+			"title": "Hono: `csrf()` does not check requests sent by hyperlink auditing (`text/ping`) (<4.13.16)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"agent"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-4h7h-rv7c-7m2v",
+			"severity": "moderate",
+			"packages": [
+				"hono"
+			],
+			"title": "Hono: `validator('form')` skips validation for `multipart/form-data` requests with extra parameters (>=4.5.1 <=4.13.15)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"agent"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-4m76-xfj5-7975",
+			"severity": "moderate",
+			"packages": [
+				"hono"
+			],
+			"title": "Hono: `mount()` and `app.mount()` can forward a path that bypasses middleware scoped inside the mount prefix (<4.13.16)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"agent"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-4qv8-2p9j-2685",
+			"severity": "moderate",
+			"packages": [
+				"undici"
+			],
+			"title": "undici vulnerable to Denial of Service via unbounded memory in the EventSource parser (>=8.0.0 <8.12.2)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"@crm/db",
+				"agent"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-55wc-3pg8-jfw6",
+			"severity": "moderate",
+			"packages": [
+				"undici"
+			],
+			"title": "undici vulnerable to Denial of Service via unhandled exception in the decompress interceptor (>=8.0.0 <8.12.2)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"@crm/db",
+				"agent"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-6pq8-jhm2-2vcw",
+			"severity": "moderate",
+			"packages": [
+				"qs"
+			],
+			"title": "qs : qs.stringify with arrayFormat 'comma' throws an uncaught TypeError on array elements carrying a non-callable own toString (DoS) (>=6.7.0 <=6.16.0)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"agent",
+				"api"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-9fm3-97px-rjf6",
+			"severity": "moderate",
+			"packages": [
+				"undici"
+			],
+			"title": "undici WebSocket client vulnerable to Denial of Service via unbounded automatic PONG buffering (>=8.0.0 <8.12.2)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"@crm/db",
+				"agent"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-f72v-6w45-q472",
+			"severity": "moderate",
+			"packages": [
+				"undici"
+			],
+			"title": "undici vulnerable to Subresource Integrity bypass via non-lowercase algorithm tokens (>=8.0.0 <8.12.2)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"@crm/db",
+				"agent"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-h7mg-cq63-vhpq",
+			"severity": "moderate",
+			"packages": [
+				"hono"
+			],
+			"title": "Hono: RegExpRouter skips wildcard middleware for some route sets and for paths with an encoded line terminator (>=4.1.4 <=4.13.15)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"agent"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-jpvv-r467-5p4w",
+			"severity": "moderate",
+			"packages": [
+				"@hono/node-server"
+			],
+			"title": "@hono/node-server: Backslash in the request path is parsed as a path separator, bypassing path-based access control at a reverse proxy (>=2.0.0 <2.1.6)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"agent"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-qv5m-9pm6-hqp3",
+			"severity": "moderate",
+			"packages": [
+				"@hono/node-server"
+			],
+			"title": "@hono/node-server: Unhandled `ECONNRESET` on the socket during an asynchronous WebSocket upgrade crashes the process (>=2.0.0 <2.1.6)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"agent"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-rmxm-3fg6-px4f",
+			"severity": "moderate",
+			"packages": [
+				"@hono/node-server"
+			],
+			"title": "@hono/node-server: `serveStatic` decodes the request path a second time, leading to bypass of middleware on static paths (>=1.19.10 <2.1.3)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"agent"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-rxp7-6hxx-x8q5",
+			"severity": "moderate",
+			"packages": [
+				"ip-address"
+			],
+			"title": "ip-address: Address6 matches a zone identifier in quadratic time ahead of its length limit, allowing a single long string to stall the process (<=10.7.3)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"agent"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-w74x-v6f9-j3xg",
+			"severity": "moderate",
+			"packages": [
+				"fast-uri"
+			],
+			"title": "fast-uri vulnerable to URI scheme spoofing via percent-encoded scheme decoding (>=3.0.0 <3.1.9)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"agent"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-wjr9-j795-jxcr",
+			"severity": "moderate",
+			"packages": [
+				"fast-uri"
+			],
+			"title": "fast-uri vulnerable to host confusion via unchecked WHATWG host canonicalization (>=3.1.3 <3.1.9)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"agent"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-333x-w4r6-6crp",
+			"severity": "low",
+			"packages": [
+				"fast-uri"
+			],
+			"title": "fast-uri vulnerable to scheme injection via an unescaped first-segment colon in suffix references (>=3.0.0 <3.1.9)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"agent"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-3gg2-335m-rxc6",
+			"severity": "low",
+			"packages": [
+				"hono"
+			],
+			"title": "Hono: `css` helper does not escape a closing tag split between the template and an interpolated value, allowing HTML injection (>=3.12.0 <=4.13.15)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"agent"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-44jh-23m7-hpcf",
+			"severity": "low",
+			"packages": [
+				"@better-auth/drizzle-adapter",
+				"@better-auth/kysely-adapter",
+				"better-auth"
+			],
+			"title": "@better-auth/drizzle-adapter: Concurrent requests can exceed rate limits on PostgreSQL (>=1.6.17 <1.7.7)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"@crm/auth",
+				"api",
+				"app"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-474x-hrwr-fgx4",
+			"severity": "low",
+			"packages": [
+				"fast-xml-parser"
+			],
+			"title": "fast-xml-parser: Quadratic CPU consumption scanning unterminated stop-node tags (<=5.11.2)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"@crm/auth"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-c6gr-qvv4-5v3f",
+			"severity": "low",
+			"packages": [
+				"dompurify"
+			],
+			"title": "DOMPurify: SMIL attributeName=href guard is skipped when PARSER_MEDIA_TYPE is application/xhtml+xml (<=3.4.16)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"app"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		},
+		{
+			"id": "GHSA-xhq7-xmqj-769h",
+			"severity": "low",
+			"packages": [
+				"fast-uri"
+			],
+			"title": "fast-uri vulnerable to improper path equivalence in relative reference normalization (>=3.0.0 <3.1.9)",
+			"kind": "runtime",
+			"runtimeIn": [
+				"agent"
+			],
+			"reason": "runtime: tracked for upgrade. Pre-existing on release c9473b82 (2026-11-16); not introduced by this change."
+		}
+	]
+}

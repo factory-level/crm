@@ -6,7 +6,7 @@
 	"scripts": {
 		"prepare": "git config core.hooksPath .githooks 2>/dev/null || true",
 		"build": "turbo run build",
-		"audit": "bun audit",
+		"audit": "bun tools/audit/audit.ts",
 		"dev": "turbo run dev",
 		"lint": "turbo run lint",
 		"lint:slop": "vp lint",
@@ -30,7 +30,8 @@
 		"knip": "6.42.1",
 		"turbo": "^2.11.9",
 		"typescript": "5.9.2",
-		"vite-plus": "catalog:"
+		"vite-plus": "catalog:",
+		"zod": "^4.4.3"
 	},
 	"engines": {
 		"node": ">=22"

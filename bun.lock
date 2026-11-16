@@ -11,6 +11,7 @@
         "turbo": "^2.11.9",
         "typescript": "5.9.2",
         "vite-plus": "catalog:",
+        "zod": "^4.4.3",
       },
     },
     "apps/agent": {
