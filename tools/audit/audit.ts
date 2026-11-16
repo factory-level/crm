@@ -2,53 +2,22 @@
  * `bun run audit`: bun's own audit report, gated by the reviewed list in audit-allowlist.json.
  *
  * One entry per (bun advisory, package): bun reports one GHSA once per vulnerable range, so a
- * package with several installed versions has several entries. The audit fails when:
- * - bun reports an advisory for a package the list doesn't name, so a new advisory, or an old one
- *   reaching a new package, fails;
- * - an entry's severity differs from bun's;
- * - the list is invalid (every entry needs its ids, package, range, severity, kind and reason);
- * - bun can't produce a report (offline, for example): it fails closed.
- * A listed entry bun no longer reports fails in CI (`CI` set) and is a warning locally, so the list
- * shrinks as packages are upgraded.
+ * package with several installed versions has several entries. The rules are in judge.ts. The
+ * audit fails when:
+ * - bun reports an (advisory, package) the list doesn't name, so an old id in a new package fails;
+ * - a severity differs from bun's;
+ * - the list is invalid;
+ * - bun can't produce a report, its report isn't a plain object of packages, or it contradicts
+ *   bun's own exit status;
+ * - bun reports nothing, or most of the list goes unreported at once, while the list isn't empty:
+ *   a registry that serves no audit data must not pass.
+ * A few listed entries no longer reported fail in CI (`CI` set) and are warnings locally, so the
+ * list shrinks as packages are upgraded.
  */
 import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import * as z from "zod";
-
-const severity = z.enum(["low", "moderate", "high", "critical"]);
-
-const entry = z.object({
-	id: z.string().regex(/^GHSA(-[23456789cfghjmpqrvwx]{4}){3}$/),
-	advisory: z.number().int().positive(),
-	package: z.string().min(1),
-	vulnerable: z.string().min(1),
-	severity,
-	title: z.string().min(1),
-	kind: z.enum(["runtime", "dev-only"]),
-	runtimeIn: z.array(z.string()),
-	inInferOpsInstance: z.boolean(),
-	reason: z.string().min(20),
-});
-
-const allowlist = z.object({
-	reviewed: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-	base: z.string().regex(/^[0-9a-f]{40}$/),
-	advisories: z.array(entry),
-});
-
-/** What `bun audit --json` reports: each package's advisories. */
-const report = z.record(
-	z.string(),
-	z.array(
-		z.object({
-			id: z.number().int(),
-			url: z.string(),
-			title: z.string(),
-			severity,
-		}),
-	),
-);
+import { allowlist, judge, report } from "./judge";
 
 const root = join(import.meta.dir, "../..");
 const listed = allowlist.safeParse(
@@ -61,18 +30,10 @@ if (!listed.success) {
 	process.exit(1);
 }
 
-const keyOf = (advisory: number, pkg: string) => `${advisory} ${pkg}`;
-const known = new Map(
-	listed.data.advisories.map((a) => [keyOf(a.advisory, a.package), a]),
-);
-if (known.size !== listed.data.advisories.length) {
-	console.error("audit: audit-allowlist.json lists an entry twice");
-	process.exit(1);
-}
-
 const run = spawnSync(process.execPath, ["audit", "--json"], {
 	cwd: root,
 	encoding: "utf8",
+	env: process.env,
 });
 const parsed = report.safeParse(
 	(() => {
@@ -85,44 +46,23 @@ const parsed = report.safeParse(
 );
 if (!parsed.success) {
 	console.error(
-		`audit: bun audit gave no report (exit ${run.status}); failing closed.\n${run.stderr}`,
+		`audit: bun audit gave no report of packages (exit ${run.status}); failing closed.\n${run.stderr}`,
 	);
 	process.exit(1);
 }
 
-const problems: string[] = [];
-const seen = new Set<string>();
-for (const [pkg, advisories] of Object.entries(parsed.data)) {
-	for (const reported of advisories) {
-		const key = keyOf(reported.id, pkg);
-		seen.add(key);
-		const listedEntry = known.get(key);
-		if (!listedEntry) {
-			problems.push(
-				`new: ${reported.severity} ${pkg}: ${reported.title} (${reported.url})`,
-			);
-		} else if (listedEntry.severity !== reported.severity) {
-			problems.push(
-				`severity: ${pkg} ${listedEntry.id} is ${reported.severity} in bun's report, ${listedEntry.severity} in the list`,
-			);
-		}
-	}
-}
-
-const stale = [...known.entries()]
-	.filter(([key]) => !seen.has(key))
-	.map(([, a]) => `${a.package} ${a.id} (${a.vulnerable})`);
-if (stale.length > 0) {
-	const line = `no longer reported, so remove from audit-allowlist.json: ${stale.join(", ")}`;
-	if (process.env.CI) problems.push(`stale: ${line}`);
-	else console.warn(`audit: ${line}`);
-}
-
-if (problems.length > 0) {
-	console.error(`audit: ${problems.length} problem(s):`);
-	for (const problem of problems) console.error(`  ${problem}`);
+const verdict = judge(
+	listed.data,
+	parsed.data,
+	run.status,
+	Boolean(process.env.CI),
+);
+for (const warning of verdict.warnings) console.warn(`audit: ${warning}`);
+if (verdict.problems.length > 0) {
+	console.error(`audit: ${verdict.problems.length} problem(s):`);
+	for (const problem of verdict.problems) console.error(`  ${problem}`);
 	process.exit(1);
 }
 console.log(
-	`audit: ${seen.size} reported advisories, each listed and reviewed in audit-allowlist.json; none new.`,
+	`audit: ${verdict.reported} reported advisories, each listed and reviewed in audit-allowlist.json; none new.`,
 );
