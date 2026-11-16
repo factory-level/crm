@@ -12,6 +12,7 @@ import type { AuthedTrpcContext } from "../trpc/context.types";
 import { AuthMiddleware } from "../trpc/middlewares/auth.middleware";
 import { restMeta } from "../trpc/openapi";
 import {
+	instanceIdentityOutput,
 	memberListInput,
 	memberListOutput,
 	setMemberRoleInput,
@@ -34,6 +35,17 @@ export class WorkspaceRouter {
 	})
 	async get(@Ctx() ctx: AuthedTrpcContext) {
 		return this.workspace.get(ctx.user.id);
+	}
+
+	@Query({
+		output: instanceIdentityOutput,
+		meta: restMeta("GET", "/workspace/identity", ["Workspace"]),
+	})
+	async identity(@Ctx() ctx: AuthedTrpcContext) {
+		return this.workspace.identity(
+			ctx.user.id,
+			ctx.session?.session.id ?? null,
+		);
 	}
 
 	@Query({

@@ -4,6 +4,8 @@
 	"globalEnv": ["NODE_ENV"],
 	"globalPassThroughEnv": [
 		"DATABASE_URL",
+		"INFERLAB_TENANT_ID",
+		"INFERLAB_ENVIRONMENT_ID",
 		"DATABASE_URL_UNPOOLED",
 		"TEST_DATABASE_URL",
 		"TEST_RUN_ID",

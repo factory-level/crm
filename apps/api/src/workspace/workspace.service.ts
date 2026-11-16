@@ -17,8 +17,10 @@ import {
 	NotFoundException,
 	ServiceUnavailableException,
 } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { AgentTriggerService } from "../agent/agent-trigger.service";
 import { normalizeDomain } from "../companies/domain";
+import type { EnvironmentVariables } from "../config/env.validation";
 import { InjectDatabase } from "../database/database.constants";
 import {
 	countsByKey,
@@ -28,6 +30,7 @@ import {
 	resolveOrderBy,
 } from "../trpc/list-input";
 import type {
+	InstanceIdentity,
 	MemberListInput,
 	SetMemberRoleInput,
 	UpdateWorkspaceInput,
@@ -60,10 +63,50 @@ function toRole(value: string): WorkspaceRole {
 export class WorkspaceService {
 	private readonly logger = new Logger(WorkspaceService.name);
 
+	private readonly tenantId: string | null;
+	private readonly environmentId: string | null;
+
 	constructor(
 		@InjectDatabase() private readonly db: Db,
 		private readonly agent: AgentTriggerService,
-	) {}
+		config: ConfigService<EnvironmentVariables, true>,
+	) {
+		this.tenantId = config.get("INFERLAB_TENANT_ID", { infer: true }) ?? null;
+		this.environmentId =
+			config.get("INFERLAB_ENVIRONMENT_ID", { infer: true }) ?? null;
+	}
+
+	/**
+	 * The instance's identity and the caller's standing (FAC-263). A key session's id is the key's
+	 * id, so the key's expiry is read from that row; a cookie session has no key, so it reads null.
+	 */
+	async identity(
+		userId: string,
+		sessionId: string | null,
+	): Promise<InstanceIdentity> {
+		const [members, key] = await Promise.all([
+			this.db.member.findMany({
+				where: { organizationId: WORKSPACE_ID },
+				select: { userId: true, role: true },
+			}),
+			sessionId
+				? this.db.apikey.findFirst({
+						where: { id: sessionId, referenceId: userId },
+						select: { expiresAt: true },
+					})
+				: null,
+		]);
+		const own = members.find((m) => m.userId === userId);
+		return {
+			tenantId: this.tenantId,
+			environmentId: this.environmentId,
+			caller: {
+				role: own && isWorkspaceRole(own.role) ? own.role : null,
+				onlyMember: members.length === 1 && own !== undefined,
+				apiKeyExpiresAt: key?.expiresAt?.toISOString() ?? null,
+			},
+		};
+	}
 
 	async get(userId: string): Promise<Workspace> {
 		let row = await this.readWorkspace();
