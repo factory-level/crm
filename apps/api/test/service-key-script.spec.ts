@@ -124,6 +124,31 @@ describe("service-key provision", () => {
 			expect((await keys()).map((k) => k.id).sort()).toEqual(
 				[oldId, newId].sort(),
 			);
+			// A kept key that isn't live revokes nothing: expire the new key, and keeping it is refused.
+			const expired = new Date(Date.now() - 1000);
+			const realExpiry = (
+				await db.apikey.findUniqueOrThrow({
+					where: { id: newId },
+					select: { expiresAt: true },
+				})
+			).expiresAt;
+			await db.apikey.update({
+				where: { id: newId },
+				data: { expiresAt: expired },
+			});
+			const dead = script("revoke", "--email", SERVICE, "--keep", newId);
+			expect(dead.exitCode).toBe(2);
+			expect(dead.stdout.toString()).toContain("isn't live");
+			expect(await keys()).toHaveLength(2);
+			await db.apikey.update({
+				where: { id: newId },
+				data: { enabled: false, expiresAt: realExpiry },
+			});
+			expect(
+				script("revoke", "--email", SERVICE, "--keep", newId).exitCode,
+			).toBe(2);
+			expect(await keys()).toHaveLength(2);
+			await db.apikey.update({ where: { id: newId }, data: { enabled: true } });
 			// A key id that isn't the service account's revokes nothing.
 			expect(
 				script("revoke", "--email", SERVICE, "--keep", "someone-elses-key")

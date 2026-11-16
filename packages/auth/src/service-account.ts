@@ -154,21 +154,29 @@ export async function issueServiceKey(
 
 /**
  * Deletes every key of the service user except `keepKeyId`: rotation's last step, once the caller
- * uses the new key. Refuses a `keepKeyId` that isn't the service user's, so a mistyped id can't
- * delete every key. Returns how many were deleted.
+ * uses the new key. Refuses a `keepKeyId` that isn't the service user's, or isn't live (disabled,
+ * expired or without an expiry), so a mistyped or dead id can't delete the only live key. Returns
+ * how many were deleted.
  */
 export async function revokeOtherServiceKeys(
 	db: Db,
 	userId: string,
 	keepKeyId: string,
+	now: Date = new Date(),
 ): Promise<number> {
 	const keep = await db.apikey.findFirst({
 		where: { id: keepKeyId, referenceId: userId },
-		select: { id: true },
+		select: { id: true, enabled: true, expiresAt: true },
 	});
 	if (!keep) {
 		throw new ServiceAccountError(
 			`key ${keepKeyId} isn't the service account's; nothing revoked`,
+		);
+	}
+	// Keeping a dead key would delete the only live one: the kept key must be enabled and unexpired.
+	if (keep.enabled === false || !keep.expiresAt || keep.expiresAt <= now) {
+		throw new ServiceAccountError(
+			`key ${keepKeyId} isn't live (disabled, expired or without an expiry); nothing revoked`,
 		);
 	}
 	const { count } = await db.apikey.deleteMany({
