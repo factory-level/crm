@@ -34,6 +34,21 @@ export class EnvironmentVariables {
 	@MinLength(1)
 	HOST?: string;
 
+	/**
+	 * The InferOps tenant and environment this instance serves (FAC-263), set by the provisioner.
+	 * Reported by GET /rest/workspace/identity so InferOps can check a connection before it uses a
+	 * key. Identity only: nothing in the CRM authorizes by them.
+	 */
+	@IsOptional()
+	@IsString()
+	@MinLength(1)
+	INFERLAB_TENANT_ID?: string;
+
+	@IsOptional()
+	@IsString()
+	@MinLength(1)
+	INFERLAB_ENVIRONMENT_ID?: string;
+
 	@IsString()
 	@MinLength(1, {
 		message:
