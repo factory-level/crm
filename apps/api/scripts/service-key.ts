@@ -13,10 +13,11 @@
  * Exit 0 on success; 2 on a refusal, which is also printed on stdout as `{"refused": "…"}`; 1 on
  * anything else.
  */
-import { closeSync, openSync, writeSync } from "node:fs";
+import { closeSync, openSync, unlinkSync, writeSync } from "node:fs";
 import { auth } from "@crm/auth/auth";
 import {
 	type CreateApiKey,
+	type IssuedKey,
 	issueServiceKey,
 	provisionServiceAccount,
 	ServiceAccountError,
@@ -66,17 +67,26 @@ async function provision(): Promise<void> {
 			"the service account already holds a live key; replacing it is rotation (FAC-263), or recreate this instance's database",
 		);
 	}
-	const createApiKey: CreateApiKey = (input) =>
-		auth.api.createApiKey(input) as ReturnType<CreateApiKey>;
-	const issued = await issueServiceKey(db, createApiKey, {
-		userId,
-		name,
-		days,
-	});
-	// A new file only, readable by this user alone: the one place the key is written.
+	// The output file first, so a key is never minted with nowhere to go: a new file only, readable
+	// by this user alone, the one place the key is written.
 	const fd = openSync(out, "wx", 0o600);
+	let issued: IssuedKey;
+	try {
+		const createApiKey: CreateApiKey = (input) =>
+			auth.api.createApiKey(input) as ReturnType<CreateApiKey>;
+		issued = await issueServiceKey(db, createApiKey, { userId, name, days });
+	} catch (error) {
+		closeSync(fd);
+		unlinkSync(out);
+		throw error;
+	}
 	try {
 		writeSync(fd, `${JSON.stringify({ userId, ...issued })}\n`);
+	} catch (error) {
+		// The key couldn't be handed over: delete it rather than leave a live key nobody holds.
+		await db.apikey.deleteMany({ where: { id: issued.keyId } });
+		unlinkSync(out);
+		throw error;
 	} finally {
 		closeSync(fd);
 	}

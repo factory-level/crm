@@ -153,6 +153,8 @@ export async function issueServiceKey(
 }
 
 export interface ServiceStatus {
+	/** The service user's id: the user with that address, or the id provisioning would give it. */
+	userId: string;
 	members: number;
 	serviceRole: string | null;
 	keys: { keyId: string; expiresAt: string | null; enabled: boolean }[];
@@ -165,7 +167,14 @@ export async function serviceAccountStatus(
 	db: Db,
 	email: string,
 ): Promise<ServiceStatus> {
-	const userId = serviceUserId(email);
+	// The user with that address, whatever its id: one that existed before provisioning keeps its own
+	// (provisionServiceAccount upserts by email), so the id isn't assumed from the address.
+	const address = email.trim().toLowerCase();
+	const found = await db.user.findUnique({
+		where: { email: address },
+		select: { id: true },
+	});
+	const userId = found?.id ?? serviceUserId(address);
 	const [members, keys, otherKeys] = await Promise.all([
 		db.member.findMany({
 			where: { organizationId: WORKSPACE_ID },
@@ -179,6 +188,7 @@ export async function serviceAccountStatus(
 		db.apikey.count({ where: { referenceId: { not: userId } } }),
 	]);
 	return {
+		userId,
 		members: members.length,
 		serviceRole: members.find((m) => m.userId === userId)?.role ?? null,
 		keys: keys.map((k) => ({

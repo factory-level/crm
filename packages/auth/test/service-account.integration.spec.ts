@@ -198,4 +198,29 @@ describe("the service account (FAC-259)", () => {
 		expect(status.keys.map((k) => k.keyId)).toEqual([`k2-${suffix}`]);
 		expect(JSON.stringify(status)).not.toContain("crm_secret");
 	});
+
+	it("reports a service user that existed before provisioning by its own id", async () => {
+		const legacy = `legacy-${suffix}`;
+		await db.user.create({
+			data: {
+				id: legacy,
+				email: SERVICE,
+				name: "older",
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			},
+		});
+		try {
+			const { userId } = await provisionServiceAccount(db, SERVICE);
+			expect(userId).toBe(legacy);
+			const status = await serviceAccountStatus(db, SERVICE);
+			expect(status.userId).toBe(legacy);
+			expect(status.serviceRole).toBe("member");
+			expect(status.members).toBe(1);
+		} finally {
+			await db.apikey.deleteMany({ where: { referenceId: legacy } });
+			await db.member.deleteMany({ where: { userId: legacy } });
+			await db.user.deleteMany({ where: { id: legacy } });
+		}
+	});
 });
