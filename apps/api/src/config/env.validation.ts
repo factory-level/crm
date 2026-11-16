@@ -28,6 +28,12 @@ export class EnvironmentVariables {
 	@Max(65535)
 	PORT = 3001;
 
+	/** Optional address to listen on (for example 127.0.0.1). Unset: all interfaces. */
+	@IsOptional()
+	@IsString()
+	@MinLength(1)
+	HOST?: string;
+
 	@IsString()
 	@MinLength(1, {
 		message:

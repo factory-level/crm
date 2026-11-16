@@ -59,3 +59,15 @@ export function isWorkspaceEmail(email: string | null | undefined): boolean {
 		(domain) => host === domain || host.endsWith(`.${domain}`),
 	);
 }
+
+/**
+ * Whether ALLOWED_SIGN_IN names exactly `email` and nothing else: no domain, no other address. A
+ * service-account instance (FAC-263) lets nobody but its service user exist.
+ */
+export function allowsOnly(email: string): boolean {
+	const { domains, addresses } = allowList();
+	const value = email.trim().toLowerCase();
+	return (
+		domains.length === 0 && addresses.length === 1 && addresses[0] === value
+	);
+}

@@ -10,6 +10,7 @@ import { organization } from "better-auth/plugins/organization";
 import { API_KEY_EXPIRATION, API_KEY_HEADER, API_KEY_PREFIX } from "./api-keys";
 import { AUTH_COOKIE_PREFIX } from "./cookies";
 import { env } from "./env";
+import { authBeforeGuards } from "./key-route-guard";
 import { ensureWorkspaceMembership } from "./organization";
 import {
 	GOOGLE_PROVIDER_ID,
@@ -19,7 +20,6 @@ import {
 	SYNC_SCOPES,
 } from "./scopes";
 import { notifySignedIn } from "./signed-in";
-import { slackConnectGuard } from "./slack-connect";
 import { rememberSlackInstall, replaceSlackConnection } from "./slack-grant";
 import { SLACK_REQUESTED_SCOPES, SLACK_USER_SCOPES } from "./slack-scopes";
 import { queueSlackInventorySync } from "./slack-sync";
@@ -118,7 +118,7 @@ export const auth = betterAuth({
 
 	trustedOrigins: [...env.trustedOrigins],
 	hooks: {
-		before: slackConnectGuard,
+		before: authBeforeGuards,
 	},
 
 	plugins: [
