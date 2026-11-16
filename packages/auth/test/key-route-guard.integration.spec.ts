@@ -2,20 +2,36 @@ import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { apiKey } from "@better-auth/api-key";
 import { sso } from "@better-auth/sso";
 import { db } from "@crm/db";
-import { betterAuth } from "better-auth";
+import { type BetterAuthPlugin, betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+import { APIError, createAuthEndpoint } from "better-auth/api";
+import { organization } from "better-auth/plugins/organization";
 import { API_KEY_HEADER, API_KEY_PREFIX } from "../src/api-keys";
 import {
 	authBeforeGuards,
-	isKeyRefusedPath,
-	KEY_REFUSED_PATH_PREFIXES,
+	KEY_ALLOWED_PATHS,
+	refuseKeyOnAuthRoutes,
 } from "../src/key-route-guard";
+import { WORKSPACE_ID } from "../src/organization";
 
 const suffix = process.env.TEST_RUN_ID ?? "key-route-guard-spec";
 const BASE_URL = "http://localhost:3001";
 const userId = `key-route-guard-${suffix}`;
+const memberId = `${userId}-member`;
 
-// The CRM's own api-key and SSO setup, behind the same before-hook the CRM uses.
+// A route no plugin has today, standing in for one a future Better Auth version or plugin adds.
+const future = {
+	id: "key-route-guard-future",
+	endpoints: {
+		future: createAuthEndpoint(
+			"/some-future-route",
+			{ method: "GET" },
+			async (ctx) => ctx.json({ reached: true }),
+		),
+	},
+} satisfies BetterAuthPlugin;
+
+// The CRM's own api-key, organization and SSO setup, behind the same before-hook the CRM uses.
 const guarded = betterAuth({
 	baseURL: BASE_URL,
 	secret: "key-route-guard-spec-secret-0123456789",
@@ -23,6 +39,11 @@ const guarded = betterAuth({
 	emailAndPassword: { enabled: false },
 	hooks: { before: authBeforeGuards },
 	plugins: [
+		organization({
+			allowUserToCreateOrganization: false,
+			disableOrganizationDeletion: true,
+			creatorRole: "owner",
+		}),
 		sso({ organizationProvisioning: { disabled: true } }),
 		apiKey({
 			apiKeyHeaders: API_KEY_HEADER,
@@ -31,6 +52,7 @@ const guarded = betterAuth({
 			requireName: true,
 			rateLimit: { enabled: false },
 		}),
+		future,
 	],
 });
 
@@ -60,6 +82,25 @@ beforeAll(async () => {
 			updatedAt: new Date(),
 		},
 	});
+	await db.organization.upsert({
+		where: { id: WORKSPACE_ID },
+		create: {
+			id: WORKSPACE_ID,
+			name: "CRM",
+			slug: "crm",
+			createdAt: new Date(),
+		},
+		update: {},
+	});
+	await db.member.create({
+		data: {
+			id: memberId,
+			organizationId: WORKSPACE_ID,
+			userId,
+			role: "member",
+			createdAt: new Date(),
+		},
+	});
 	// Server-side, with no request: provisioning's path. The guard must let it through.
 	const issued = await guarded.api.createApiKey({
 		body: { userId, name: "guard-spec", expiresIn: 24 * 60 * 60 },
@@ -70,31 +111,48 @@ beforeAll(async () => {
 afterAll(async () => {
 	await db.ssoProvider.deleteMany({ where: { userId } });
 	await db.apikey.deleteMany({ where: { referenceId: userId } });
+	await db.member.deleteMany({ where: { id: memberId } });
 	await db.user.deleteMany({ where: { id: userId } });
 });
 
-describe("the key-route guard (FAC-259)", () => {
-	it("names /api-key/ and /sso/ and nothing else", () => {
-		expect(KEY_REFUSED_PATH_PREFIXES).toEqual(["/api-key/", "/sso/"]);
-		for (const path of [
-			"/api-key/create",
-			"/api-key/list",
-			"/api-key/delete",
-			"/sso/register",
-			"/sso/providers",
-		])
-			expect(isKeyRefusedPath(path)).toBe(true);
+describe("the key guard: no Better Auth route answers an HTTP request carrying a key (FAC-259)", () => {
+	it("allows no route, and refuses any path, a future one included, when a key comes over HTTP", () => {
+		expect(KEY_ALLOWED_PATHS).toEqual([]);
+		const withKey = new Headers({ [API_KEY_HEADER]: "crm_anything" });
 		for (const path of [
 			"/get-session",
-			"/api-keys",
-			"/ssoish",
-			"/sign-in/social",
+			"/ok",
+			"/update-user",
+			"/organization/leave",
+			"/api-key/list",
+			"/sso/register",
+			"/some-route-that-does-not-exist-yet",
 		])
-			expect(isKeyRefusedPath(path)).toBe(false);
+			expect(() => refuseKeyOnAuthRoutes(path, withKey, true)).toThrow(
+				APIError,
+			);
+		// A server-side call, or a request without a key, is never refused.
+		expect(() =>
+			refuseKeyOnAuthRoutes("/get-session", withKey, false),
+		).not.toThrow();
+		expect(() =>
+			refuseKeyOnAuthRoutes("/update-user", new Headers(), true),
+		).not.toThrow();
 	});
 
 	it("still lets a server-side call issue a key (no request, no key)", () => {
 		expect(key.startsWith(API_KEY_PREFIX)).toBe(true);
+	});
+
+	it("still lets the CRM read the key's session server-side, the way its REST and tRPC layers do", async () => {
+		const session = await guarded.api.getSession({
+			headers: new Headers({ [API_KEY_HEADER]: key }),
+		});
+		expect(session?.user.id).toBe(userId);
+	});
+
+	it("refuses a key on get-session over HTTP", async () => {
+		expect((await call("GET", "/get-session")).status).toBe(403);
 	});
 
 	it("refuses a key on every key route, so a key can't mint, list or delete keys", async () => {
@@ -109,8 +167,7 @@ describe("the key-route guard (FAC-259)", () => {
 			["POST", "/api-key/update", { keyId: "x", name: "y" }],
 			["POST", "/api-key/delete", { keyId: "x" }],
 		] as const) {
-			const res = await call(method, path, body);
-			expect(res.status).toBe(403);
+			expect((await call(method, path, body)).status).toBe(403);
 		}
 		expect(await db.apikey.count({ where: { referenceId: userId } })).toBe(
 			before,
@@ -128,14 +185,48 @@ describe("the key-route guard (FAC-259)", () => {
 		expect(await db.ssoProvider.count({ where: { userId } })).toBe(0);
 	});
 
-	it("leaves the key working elsewhere, and leaves those routes as they were without a key", async () => {
-		const session = await call("GET", "/get-session");
-		expect(session.status).toBe(200);
+	it("refuses a key on the user and organization routes, so it can't rename itself, move its email or leave", async () => {
+		for (const [method, path, body] of [
+			["POST", "/update-user", { name: "renamed by a key" }],
+			["POST", "/change-email", { newEmail: "moved@example.test" }],
+			["POST", "/organization/leave", { organizationId: WORKSPACE_ID }],
+			[
+				"POST",
+				"/organization/invite-member",
+				{ email: "x@example.test", role: "owner" },
+			],
+			["GET", "/organization/list-members"],
+			["POST", "/revoke-sessions", {}],
+		] as const) {
+			expect((await call(method, path, body)).status).toBe(403);
+		}
+		expect(await db.member.count({ where: { id: memberId } })).toBe(1);
+		const user = await db.user.findUnique({
+			where: { id: userId },
+			select: { name: true, email: true },
+		});
+		expect(user).toEqual({
+			name: "guard spec",
+			email: `${userId}@example.test`,
+		});
+	});
+
+	it("refuses a key on a route added later, which no list names", async () => {
+		expect((await call("GET", "/some-future-route")).status).toBe(403);
+	});
+
+	it("leaves every route as it was for a request without a key", async () => {
 		expect(
-			((await session.json()) as { user?: { id: string } } | null)?.user?.id,
-		).toBe(userId);
+			(await call("GET", "/some-future-route", undefined, false)).status,
+		).toBe(200);
+		expect((await call("GET", "/get-session", undefined, false)).status).toBe(
+			200,
+		);
 		expect((await call("GET", "/api-key/list", undefined, false)).status).toBe(
 			401,
 		);
+		expect(
+			(await call("POST", "/update-user", { name: "x" }, false)).status,
+		).toBe(401);
 	});
 });
