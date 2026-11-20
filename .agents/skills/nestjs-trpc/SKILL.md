@@ -266,3 +266,5 @@ Read these when the task goes past the basics:
   Next.js / vanilla clients, `AppRouterHost` for e2e tests and trpc-ui.
 - **[references/api-reference.md](references/api-reference.md)** — exact exported symbols and
   type signatures transcribed from the shipped `.d.ts`. Check here before guessing a name.
+
+Canonical cross-repository engineering context: [InferOps maintainer guide](https://github.com/factory-level/inferops/blob/develop/docs/agent/architecture/infercrm/coding-entrypoints.md). Local execution instructions above remain applicable to this checkout.

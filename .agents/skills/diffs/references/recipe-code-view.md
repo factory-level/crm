@@ -211,3 +211,5 @@ for editor commands such as undo, redo, markers, or programmatic edits.
 Read [Edit with React](recipe-edit-react.md) or
 [Edit with vanilla JavaScript](recipe-edit-vanilla.md) for the complete editor
 lifecycle.
+
+Canonical cross-repository engineering context: [InferOps maintainer guide](https://github.com/factory-level/inferops/blob/develop/docs/agent/architecture/infercrm/coding-entrypoints.md). Local execution instructions above remain applicable to this checkout.

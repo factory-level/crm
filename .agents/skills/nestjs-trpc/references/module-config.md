@@ -299,3 +299,5 @@ right tRPC adapter. No configuration needed.
 The visible consequence is in `ContextOptions`, which is
 `CreateExpressContextOptions | CreateFastifyContextOptions`. Narrow before reaching for
 driver-specific request properties, and your context stays portable.
+
+Canonical cross-repository engineering context: [InferOps maintainer guide](https://github.com/factory-level/inferops/blob/develop/docs/agent/architecture/infercrm/coding-entrypoints.md). Local execution instructions above remain applicable to this checkout.

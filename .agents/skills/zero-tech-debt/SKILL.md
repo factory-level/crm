@@ -31,3 +31,5 @@ Rework the change from the intended end state, not from the historical path that
 - Do not invent a generic framework for one feature.
 - Keep the refactor scoped to what makes the final shape coherent.
 - Prefer names that describe product intent over implementation history.
+
+Canonical cross-repository engineering context: [InferOps maintainer guide](https://github.com/factory-level/inferops/blob/develop/docs/agent/architecture/infercrm/coding-entrypoints.md). Local execution instructions above remain applicable to this checkout.

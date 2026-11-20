@@ -60,3 +60,5 @@ Kick off a new parallel development task. Creates a clone, branch, tmux session,
 - The prompt should be a single clear message, not a multi-step plan. Let Pi figure out the implementation.
 - If the user provides file paths or error messages, include them verbatim in the prompt.
 - Don't over-specify. Trust Pi to explore the codebase and find the right approach.
+
+Canonical cross-repository engineering context: [InferOps maintainer guide](https://github.com/factory-level/inferops/blob/develop/docs/agent/architecture/infercrm/coding-entrypoints.md). Local execution instructions above remain applicable to this checkout.

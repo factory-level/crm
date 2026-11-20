@@ -157,3 +157,5 @@ gh stack modify --abort
 
 Related: `submit` also detects a pending modify state, and under a TTY asks before overwriting the
 stack on GitHub with local state.
+
+Canonical cross-repository engineering context: [InferOps maintainer guide](https://github.com/factory-level/inferops/blob/develop/docs/agent/architecture/infercrm/coding-entrypoints.md). Local execution instructions above remain applicable to this checkout.

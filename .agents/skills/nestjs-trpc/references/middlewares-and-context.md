@@ -349,3 +349,5 @@ This is manual, and nothing enforces that the annotation on `@Ctx()` matches wha
 middleware chain actually produced — the cast is on trust. Keep the interface definition
 next to the middleware that establishes it so the two stay in sync, and be aware this is the
 one place in the stack where you lose end-to-end inference.
+
+Canonical cross-repository engineering context: [InferOps maintainer guide](https://github.com/factory-level/inferops/blob/develop/docs/agent/architecture/infercrm/coding-entrypoints.md). Local execution instructions above remain applicable to this checkout.

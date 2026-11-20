@@ -68,3 +68,5 @@ Only include `UX Flow` when it helps explain the product behavior, user journey,
 - Do NOT include "Generated with Claude Code" or similar footers
 - Keep the PR description concise and focused on intent and approach
 - Use HEREDOC for the PR body to preserve formatting
+
+Canonical cross-repository engineering context: [InferOps maintainer guide](https://github.com/factory-level/inferops/blob/develop/docs/agent/architecture/infercrm/coding-entrypoints.md). Local execution instructions above remain applicable to this checkout.

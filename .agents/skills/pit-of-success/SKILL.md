@@ -27,3 +27,5 @@ Make misuse hard and the obvious call correct.
 - Do not add comments as a substitute for making misuse impossible or obvious.
 - Keep the diff boring: one invariant, one owner, no speculative abstraction.
 - If compatibility prevents changing the seam, name the dangerous API accordingly and expose a safe default API beside it.
+
+Canonical cross-repository engineering context: [InferOps maintainer guide](https://github.com/factory-level/inferops/blob/develop/docs/agent/architecture/infercrm/coding-entrypoints.md). Local execution instructions above remain applicable to this checkout.

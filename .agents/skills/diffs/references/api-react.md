@@ -61,3 +61,5 @@ entry also re-exports every type in [Shared types](api-types.md).
 | `renderDiffChildren`      | Function | Builds React portals for diff slots.                   |
 | `renderFileChildren`      | Function | Builds React portals for file slots.                   |
 | `templateRender`          | Function | Renders React content through a managed template slot. |
+
+Canonical cross-repository engineering context: [InferOps maintainer guide](https://github.com/factory-level/inferops/blob/develop/docs/agent/architecture/infercrm/coding-entrypoints.md). Local execution instructions above remain applicable to this checkout.

@@ -95,3 +95,5 @@ stacks.
 
 A trivial incidental fix can ride along in the current stack. Once it grows into its own project, it
 deserves its own stack.
+
+Canonical cross-repository engineering context: [InferOps maintainer guide](https://github.com/factory-level/inferops/blob/develop/docs/agent/architecture/infercrm/coding-entrypoints.md). Local execution instructions above remain applicable to this checkout.

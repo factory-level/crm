@@ -93,3 +93,5 @@ member of its classes.
 | `normalizePosition(position)`                        | Clamps a position to the document.                    |
 
 `IStateStorage` has `get(cacheKey)` and `set(cacheKey, state)` methods.
+
+Canonical cross-repository engineering context: [InferOps maintainer guide](https://github.com/factory-level/inferops/blob/develop/docs/agent/architecture/infercrm/coding-entrypoints.md). Local execution instructions above remain applicable to this checkout.

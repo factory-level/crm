@@ -44,3 +44,5 @@ Kick off an agent task tied to an existing PR or branch. Reuses the existing tmu
 - Keep the task concise and direct.
 - For conflict resolution, include that the agent should ask before making ambiguous choices.
 - Do not use `/create-draft-pr`; this command is for updating an existing PR branch.
+
+Canonical cross-repository engineering context: [InferOps maintainer guide](https://github.com/factory-level/inferops/blob/develop/docs/agent/architecture/infercrm/coding-entrypoints.md). Local execution instructions above remain applicable to this checkout.

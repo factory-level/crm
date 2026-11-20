@@ -268,3 +268,5 @@ merge commits that do not belong in a feature pull request.
 the diff and writes one. Retitle it yourself and the automation stops.
 `CONTRIBUTING.md` is the whole account of how a change reaches `release`; read it
 before shipping.
+
+Canonical cross-repository engineering context: [InferOps maintainer guide](https://github.com/factory-level/inferops/blob/develop/docs/agent/architecture/infercrm/coding-entrypoints.md). Local execution instructions above remain applicable to this checkout.
