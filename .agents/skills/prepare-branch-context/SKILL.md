@@ -52,3 +52,5 @@ Build a comprehensive understanding of the current branch so you can handle foll
 - If the diff is very large, focus on understanding the overall structure first, then read key files in detail.
 - Keep the summary concise but thorough enough that you could confidently make changes to this branch.
 - If the branch is `main` or has no divergence from main, tell the user there's nothing to analyze.
+
+Canonical cross-repository engineering context: [InferOps maintainer guide](https://github.com/factory-level/inferops/blob/develop/docs/agent/architecture/infercrm/coding-entrypoints.md). Local execution instructions above remain applicable to this checkout.

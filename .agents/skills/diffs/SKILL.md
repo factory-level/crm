@@ -49,3 +49,5 @@ them. Read the package types and the upstream documentation instead.
 - Recipes for vanilla JavaScript rendering and vanilla editing.
 - Recipes for line annotations and selection.
 - Recipe for registering a custom Shiki language or theme.
+
+Canonical cross-repository engineering context: [InferOps maintainer guide](https://github.com/factory-level/inferops/blob/develop/docs/agent/architecture/infercrm/coding-entrypoints.md). Local execution instructions above remain applicable to this checkout.

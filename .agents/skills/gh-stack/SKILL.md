@@ -181,3 +181,5 @@ Open the reference whose trigger matches the task; no need to preload all three.
   side effects, atomicity, or ordering guarantees.
 - `references/troubleshooting.md` — read on a rebase conflict, after a squash-merge, on local and
   remote divergence, when restructuring a stack, or when driving stacks from another tool.
+
+Canonical cross-repository engineering context: [InferOps maintainer guide](https://github.com/factory-level/inferops/blob/develop/docs/agent/architecture/infercrm/coding-entrypoints.md). Local execution instructions above remain applicable to this checkout.

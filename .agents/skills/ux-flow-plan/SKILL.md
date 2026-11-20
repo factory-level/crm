@@ -54,3 +54,5 @@ Create a high-level architecture plan that starts from the user experience and o
 - Separate "current flow" from "desired flow".
 - Call out whether a feature is coupled to an existing concept or intentionally independent from it.
 - Prefer plain product and architecture language over framework-specific jargon unless the jargon names a real boundary.
+
+Canonical cross-repository engineering context: [InferOps maintainer guide](https://github.com/factory-level/inferops/blob/develop/docs/agent/architecture/infercrm/coding-entrypoints.md). Local execution instructions above remain applicable to this checkout.

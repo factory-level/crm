@@ -177,3 +177,5 @@ count (`gh stack up 3`). Movement clamps at the stack bounds, and merged branche
 navigating from an active branch, so `bottom` lands on the lowest *unmerged* branch.
 
 `gh stack switch` is a selection menu with no non-interactive path. Use the commands above instead.
+
+Canonical cross-repository engineering context: [InferOps maintainer guide](https://github.com/factory-level/inferops/blob/develop/docs/agent/architecture/infercrm/coding-entrypoints.md). Local execution instructions above remain applicable to this checkout.

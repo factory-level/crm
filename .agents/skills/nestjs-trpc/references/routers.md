@@ -295,3 +295,5 @@ This calls the method directly, so decorator-driven `input`/`output` validation 
 middlewares do **not** run. To exercise the real procedure pipeline, go through
 `AppRouterHost` and create a server-side caller — see
 [codegen-and-client.md](codegen-and-client.md#e2e-testing-with-approuterhost).
+
+Canonical cross-repository engineering context: [InferOps maintainer guide](https://github.com/factory-level/inferops/blob/develop/docs/agent/architecture/infercrm/coding-entrypoints.md). Local execution instructions above remain applicable to this checkout.

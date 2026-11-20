@@ -106,3 +106,5 @@ If the user asked for review only, do not edit files. If the user asked to fix i
 - If a pattern is not present in the codebase, say so and recommend the smallest clean alternative.
 - Follow the target project's local style when suggesting code changes.
 - When in doubt, optimize for code that reads obvious from left to right.
+
+Canonical cross-repository engineering context: [InferOps maintainer guide](https://github.com/factory-level/inferops/blob/develop/docs/agent/architecture/infercrm/coding-entrypoints.md). Local execution instructions above remain applicable to this checkout.

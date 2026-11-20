@@ -311,3 +311,5 @@ Useful when reading issues or deciding whether an upgrade is needed:
 | 2.11.0 | output type inferred from resolver return type; NestJS 11 |
 | 2.12.0 | ESM import-extension auto-detection from tsconfig |
 | 2.13.0 | `sse` and `jsonl` options on `forRoot` |
+
+Canonical cross-repository engineering context: [InferOps maintainer guide](https://github.com/factory-level/inferops/blob/develop/docs/agent/architecture/infercrm/coding-entrypoints.md). Local execution instructions above remain applicable to this checkout.

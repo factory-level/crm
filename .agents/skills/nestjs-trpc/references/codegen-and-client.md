@@ -283,3 +283,5 @@ so gate it behind an environment check before this reaches production:
 ```typescript
 controllers: process.env.NODE_ENV !== 'production' ? [TrpcPanelController] : [],
 ```
+
+Canonical cross-repository engineering context: [InferOps maintainer guide](https://github.com/factory-level/inferops/blob/develop/docs/agent/architecture/infercrm/coding-entrypoints.md). Local execution instructions above remain applicable to this checkout.
